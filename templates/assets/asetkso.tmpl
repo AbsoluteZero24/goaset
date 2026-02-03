@@ -1,0 +1,104 @@
+{{ define "assets/asetkso" }}
+        <!--begin::App Content Header-->
+        <div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Daftar Aset KSO</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Aset KSO</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content Header-->
+        <!--begin::App Content-->
+        <div class="app-content">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header d-flex align-items-center justify-content-between">
+                    <h3 class="card-title">Data Aset KSO</h3>
+                    <div class="card-tools ms-auto d-flex gap-2">
+                      <a href="/inventori/aset-laptop/bulk-create" class="btn btn-success btn-sm">
+                        <i class="bi bi-stack"></i> Sisipan Masal
+                      </a>
+                      <a href="/inventori/aset-laptop/create" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus"></i> Tambah Aset
+                      </a>
+                    </div>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th style="width: 10px">No</th>
+                          <th>No. Inventaris</th>
+                          <th>Nama Aset</th>
+                          <th>Kategori Aset</th>
+                          <th>Merk</th>
+                          <th>Spesifikasi</th>
+                          <th>Warna</th>
+                          <th>Lokasi</th>
+                          <th>Tanggal Pembelian</th>
+                          <th>Status Aset</th>
+                          <th style="width: 100px">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {{ range $index, $asset := .assets }}
+                        <tr>
+                          <td>{{ add $index 1 }}.</td>
+                          <td>{{ $asset.InventoryNumber }}</td>
+                          <td>{{ $asset.AssetName }}</td>
+                           <td>{{ $asset.Category }}</td>
+                          <td>{{ $asset.Brand }}</td>
+                          <td>{{ $asset.Specification }}</td>
+                          <td>{{ $asset.Color }}</td>
+                          <td>{{ $asset.Location }}</td>
+                          <td>{{ $asset.PurchaseDate.Format "02-01-2006" }}</td>
+                          <td>
+                            {{ if eq $asset.Status "Ready" }}
+                              <span class="badge bg-success">Ready</span>
+                            {{ else if eq $asset.Status "Rusak" }}
+                              <span class="badge bg-danger">Rusak</span>
+                            {{ else }}
+                              <span class="badge bg-secondary">{{ $asset.Status }}</span>
+                            {{ end }}
+                          </td>
+                          <td>
+                            <div class="btn-group">
+                              <a href="/inventori/aset-laptop/edit/{{ $asset.ID }}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil"></i>
+                              </a>
+                              <a href="/inventori/aset-laptop/delete/{{ $asset.ID }}" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                <i class="bi bi-trash"></i>
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                        {{ end }}
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+            </div>
+            <!-- /.row -->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content-->
+{{ end }}

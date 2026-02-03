@@ -1,0 +1,201 @@
+{{ define "administration/employee_form" }}
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <h3 class="mb-0">{{ .title }}</h3>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/administration/employee">Employee</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ .title }}</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="app-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8 mx-auto">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Form Karyawan</h3>
+          </div>
+          <form action="{{ if .user }}/administration/employee/update/{{ .user.ID }}{{ else }}/administration/employee{{ end }}" method="POST">
+            <div class="card-body">
+              <div class="form-group mb-3">
+                <label for="nik">NIK</label>
+                <input type="text" name="nik" class="form-control" id="nik" placeholder="Masukkan NIK" value="{{ if .user }}{{ .user.NIK }}{{ end }}" required>
+              </div>
+              <div class="form-group mb-3">
+                <label for="name">Nama Lengkap</label>
+                <input type="text" name="name" class="form-control" id="name" placeholder="Masukkan Nama" value="{{ if .user }}{{ .user.Name }}{{ end }}" required>
+              </div>
+              <div class="form-group mb-3">
+                <label for="email">Email</label>
+                <input type="email" name="email" class="form-control" id="email" placeholder="Masukkan Email" value="{{ if .user }}{{ .user.Email }}{{ end }}" required>
+              </div>
+                <div class="form-group mb-3">
+                 <label for="branch">Cabang</label>
+                 <select name="branch" class="form-control" id="branch" required onchange="updateDepartments()">
+                   <option value="">-- Pilih Cabang --</option>
+                   {{ range $branch := .branches }}
+                   <option value="{{ $branch.Name }}" data-id="{{ $branch.ID }}" {{ if $.user }}{{ if eq $.user.Branch $branch.Name }}selected{{ end }}{{ end }}>{{ $branch.Name }}</option>
+                   {{ end }}
+                 </select>
+               </div>
+               <div class="form-group mb-3">
+                 <label for="department">Bagian</label>
+                 <select name="department" class="form-control" id="department" required onchange="updateSubDepartments()">
+                   <option value="">-- Pilih Bagian --</option>
+                   {{ if $.user }}
+                    <option value="{{ $.user.Department }}" selected>{{ $.user.Department }}</option>
+                   {{ end }}
+                 </select>
+               </div>
+               <div class="form-group mb-3">
+                 <label for="sub_department">Sub Bagian</label>
+                 <select name="sub_department" class="form-control" id="sub_department" required>
+                   <option value="">-- Pilih Sub Bagian --</option>
+                   {{ if $.user }}
+                    <option value="{{ $.user.SubDepartment }}" selected>{{ $.user.SubDepartment }}</option>
+                   {{ end }}
+                 </select>
+               </div>
+               <div class="form-group mb-3">
+                 <label for="position">Jabatan</label>
+                 <select name="position" class="form-control" id="position" required>
+                   <option value="">-- Pilih Jabatan --</option>
+                   {{ range $pos := .positions }}
+                   <option value="{{ $pos.Name }}" {{ if $.user }}{{ if eq $.user.Position $pos.Name }}selected{{ end }}{{ end }}>{{ $pos.Name }}</option>
+                   {{ end }}
+                 </select>
+               </div>
+              <div class="form-group mb-3">
+                <label for="status_karyawan">Status Karyawan</label>
+                <select name="status_karyawan" class="form-control" id="status_karyawan" required>
+                  <option value="Tetap" {{ if .user }}{{ if eq .user.StatusKaryawan "Tetap" }}selected{{ end }}{{ end }}>Tetap</option>
+                  <option value="Kontrak" {{ if .user }}{{ if eq .user.StatusKaryawan "Kontrak" }}selected{{ end }}{{ end }}>Kontrak</option>
+                  <option value="Magang" {{ if .user }}{{ if eq .user.StatusKaryawan "Magang" }}selected{{ end }}{{ end }}>Magang</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary">Simpan</button>
+              <a href="/administration/employee" class="btn btn-secondary">Batal</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const masterData = [
+    {{ range $branch := .branches }}
+    {
+      id: {{ $branch.ID }},
+      name: "{{ $branch.Name }}",
+      departments: [
+        {{ range $dept := $branch.Departments }}
+        {
+          id: {{ $dept.ID }},
+          name: "{{ $dept.Name }}",
+          subDepartments: [
+            {{ range $sub := $dept.SubDepartments }}
+            { id: {{ $sub.ID }}, name: "{{ $sub.Name }}" },
+            {{ end }}
+          ]
+        },
+        {{ end }}
+      ]
+    },
+    {{ end }}
+  ];
+
+  function updateDepartments() {
+    const branchSelect = document.getElementById('branch');
+    const deptSelect = document.getElementById('department');
+    const subDeptSelect = document.getElementById('sub_department');
+    
+    const branchName = branchSelect.value;
+    const branch = masterData.find(b => b.name === branchName);
+    
+    deptSelect.innerHTML = '<option value="">-- Pilih Bagian --</option>';
+    subDeptSelect.innerHTML = '<option value="">-- Pilih Sub Bagian --</option>';
+    
+    if (branch && branch.departments) {
+      branch.departments.forEach(dept => {
+        const option = document.createElement('option');
+        option.value = dept.name;
+        option.text = dept.name;
+        deptSelect.appendChild(option);
+      });
+    }
+  }
+
+  function updateSubDepartments() {
+    const branchSelect = document.getElementById('branch');
+    const deptSelect = document.getElementById('department');
+    const subDeptSelect = document.getElementById('sub_department');
+    
+    const branchName = branchSelect.value;
+    const deptName = deptSelect.value;
+    
+    const branch = masterData.find(b => b.name === branchName);
+    const dept = branch ? branch.departments.find(d => d.name === deptName) : null;
+    
+    subDeptSelect.innerHTML = '<option value="">-- Pilih Sub Bagian --</option>';
+    
+    if (dept && dept.subDepartments) {
+      dept.subDepartments.forEach(sub => {
+        const option = document.createElement('option');
+        option.value = sub.name;
+        option.text = sub.name;
+        subDeptSelect.appendChild(option);
+      });
+    }
+  }
+
+  // Initialize if edit mode
+  window.onload = function() {
+    const branchSelect = document.getElementById('branch');
+    if (branchSelect.value) {
+      // Keep existing values or re-populate
+      // For simplicity, we just leave the initial values which were set by template if in edit mode.
+      // But we need to make sure the dropdowns are populated so user can change them.
+      const initialDept = "{{ if .user }}{{ .user.Department }}{{ end }}";
+      const initialSub = "{{ if .user }}{{ .user.SubDepartment }}{{ end }}";
+      
+      const branch = masterData.find(b => b.name === branchSelect.value);
+      if (branch) {
+        const deptSelect = document.getElementById('department');
+        deptSelect.innerHTML = '<option value="">-- Pilih Bagian --</option>';
+        branch.departments.forEach(dept => {
+          const option = document.createElement('option');
+          option.value = dept.name;
+          option.text = dept.name;
+          if (dept.name === initialDept) option.selected = true;
+          deptSelect.appendChild(option);
+        });
+        
+        const dept = branch.departments.find(d => d.name === initialDept);
+        if (dept) {
+          const subDeptSelect = document.getElementById('sub_department');
+          subDeptSelect.innerHTML = '<option value="">-- Pilih Sub Bagian --</option>';
+          dept.subDepartments.forEach(sub => {
+            const option = document.createElement('option');
+            option.value = sub.name;
+            option.text = sub.name;
+            if (sub.name === initialSub) option.selected = true;
+            subDeptSelect.appendChild(option);
+          });
+        }
+      }
+    }
+  };
+</script>
+{{ end }}

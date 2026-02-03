@@ -1,0 +1,89 @@
+{{ define "administration/master_data/department" }}
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6"><h3 class="mb-0">{{ .title }}</h3></div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item active">Master Bagian</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="app-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">{{ if .department }}Edit Bagian{{ else }}Tambah Bagian{{ end }}</h3>
+          </div>
+          <form action="{{ if .department }}/administration/master-data/department/update/{{ .department.ID }}{{ else }}/administration/master-data/department/store{{ end }}" method="POST">
+            <div class="card-body">
+              <div class="form-group mb-3">
+                <label for="master_branch_id">Cabang</label>
+                <select name="master_branch_id" class="form-control" id="master_branch_id" required>
+                  <option value="">-- Pilih Cabang --</option>
+                  {{ range $branch := .branches }}
+                  <option value="{{ $branch.ID }}" {{ if $.department }}{{ if eq $.department.MasterBranchID $branch.ID }}selected{{ end }}{{ end }}>{{ $branch.Name }}</option>
+                  {{ end }}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="name">Nama Bagian</label>
+                <input type="text" name="name" class="form-control" id="name" placeholder="Masukkan nama bagian" value="{{ if .department }}{{ .department.Name }}{{ end }}" required>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary">Simpan</button>
+              {{ if .department }}
+              <a href="/administration/master-data/department" class="btn btn-secondary">Batal</a>
+              {{ end }}
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Daftar Bagian</h3>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th style="width: 10px">#</th>
+                  <th>Cabang</th>
+                  <th>Nama Bagian</th>
+                  <th style="width: 100px">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{ range $index, $dept := .departments }}
+                <tr>
+                  <td>{{ add $index 1 }}</td>
+                  <td>{{ $dept.MasterBranch.Name }}</td>
+                  <td>{{ $dept.Name }}</td>
+                  <td>
+                    <div class="btn-group">
+                      <a href="/administration/master-data/department/edit/{{ $dept.ID }}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-pencil"></i>
+                      </a>
+                      <a href="/administration/master-data/department/delete/{{ $dept.ID }}" class="btn btn-danger btn-sm" onclick="return confirm('Hapus data ini?')">
+                        <i class="bi bi-trash"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {{ end }}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ end }}

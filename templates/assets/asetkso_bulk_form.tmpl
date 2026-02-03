@@ -1,0 +1,115 @@
+{{ define "assets/asetkso_bulk_form" }}
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <h3 class="mb-0">{{ .title }}</h3>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/inventori/aset-laptop">Aset KSO</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ .title }}</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="app-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8 mx-auto">
+        <div class="card card-success">
+          <div class="card-header">
+            <h3 class="card-title">Form Sisipan Masal Aset KSO</h3>
+          </div>
+          <form action="/inventori/aset-laptop/bulk-store" method="POST">
+            <div class="card-body">
+              <input type="hidden" name="redirect_to" value="/inventori/aset-laptop">
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="inventory_number_start">Nomor Inventaris Awal (Berurutan)</label>
+                    <input type="text" name="inventory_number_start" class="form-control" id="inventory_number_start" placeholder="Contoh: KSO-001" required>
+                    <small class="text-muted">Sistem akan mengurutkan angka di bagian akhir secara otomatis.</small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="quantity">Jumlah Aset (Quantity)</label>
+                    <input type="number" name="quantity" class="form-control" id="quantity" value="1" min="1" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="asset_name">Nama Aset (Sama untuk semua)</label>
+                <input type="text" name="asset_name" class="form-control" id="asset_name" placeholder="Masukkan Nama Aset" required>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="category">Kategori</label>
+                <select name="category" class="form-control" id="category" required>
+                  <option value="">-- Pilih Kategori --</option>
+                  {{ range .categories }}
+                  <option value="{{ .Name }}">{{ .Name }}</option>
+                  {{ end }}
+                </select>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="brand">Merk / Brand</label>
+                <input type="text" name="brand" class="form-control" id="brand" placeholder="Masukkan Merk">
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="specification">Spesifikasi</label>
+                <textarea name="specification" class="form-control" id="specification" rows="3" placeholder="Masukkan Spesifikasi"></textarea>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="color">Warna</label>
+                <input type="text" name="color" class="form-control" id="color" placeholder="Masukkan Warna">
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="location">Lokasi</label>
+                <input type="text" name="location" class="form-control" id="location" placeholder="Masukkan Lokasi">
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="purchase_date">Tanggal Pembelian</label>
+                <input type="text" name="purchase_date" class="form-control bg-white" id="purchase_date" required placeholder="Pilih Tanggal">
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="status">Status</label>
+                <select name="status" class="form-control" id="status" required>
+                  <option value="Ready">Ready</option>
+                  <option value="Rusak">Rusak</option>
+                  <option value="Hilang">Hilang</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-success">Simpan Masal</button>
+              <a href="/inventori/aset-laptop" class="btn btn-secondary">Batal</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    flatpickr("#purchase_date", {
+      dateFormat: "Y-m-d",
+      defaultDate: "today",
+      allowInput: true
+    });
+  });
+</script>
+{{ end }}

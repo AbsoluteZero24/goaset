@@ -1,0 +1,237 @@
+{{ define "home" }}
+        <!--begin::App Content Header-->
+        <div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Dashboard</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content Header-->
+        <!--begin::App Content-->
+        <div class="app-content">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <!--begin::Col-->
+              <div class="col-lg-3 col-6">
+                <!--begin::Small Box Widget 1-->
+                <div class="small-box text-bg-primary shadow-sm">
+                  <div class="inner">
+                    <h3>{{ .totalAssets }}</h3>
+                    <p>Total Aset</p>
+                  </div>
+                  <div class="small-box-icon">
+                    <i class="bi bi-box-seam"></i>
+                  </div>
+                  <a href="/admin/assets" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Detail <i class="bi bi-arrow-right-circle"></i>
+                  </a>
+                </div>
+                <!--end::Small Box Widget 1-->
+              </div>
+              <!--end::Col-->
+              <div class="col-lg-3 col-6">
+                <!--begin::Small Box Widget 2-->
+                <div class="small-box text-bg-success shadow-sm">
+                  <div class="inner">
+                    <h3>{{ .readyAssets }}</h3>
+                    <p>Aset Ready</p>
+                  </div>
+                  <div class="small-box-icon">
+                    <i class="bi bi-check-circle"></i>
+                  </div>
+                  <a href="/admin/assets?status=Ready" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Detail <i class="bi bi-arrow-right-circle"></i>
+                  </a>
+                </div>
+                <!--end::Small Box Widget 2-->
+              </div>
+              <!--end::Col-->
+              <div class="col-lg-3 col-6">
+                <!--begin::Small Box Widget 3-->
+                <div class="small-box text-bg-danger shadow-sm">
+                  <div class="inner">
+                    <h3>{{ .brokenAssets }}</h3>
+                    <p>Aset Rusak</p>
+                  </div>
+                  <div class="small-box-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
+                  </div>
+                  <a href="/admin/assets?status=Rusak" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Detail <i class="bi bi-arrow-right-circle"></i>
+                  </a>
+                </div>
+                <!--end::Small Box Widget 3-->
+              </div>
+              <!--end::Col-->
+              <div class="col-lg-3 col-6">
+                <!--begin::Small Box Widget 4-->
+                <div class="small-box text-bg-warning shadow-sm">
+                  <div class="inner">
+                    <h3>{{ .totalEmployees }}</h3>
+                    <p>Total Karyawan</p>
+                  </div>
+                  <div class="small-box-icon">
+                    <i class="bi bi-people"></i>
+                  </div>
+                  <a href="/admin/users" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
+                    Detail <i class="bi bi-arrow-right-circle"></i>
+                  </a>
+                </div>
+                <!--end::Small Box Widget 4-->
+              </div>
+              <!--end::Col-->
+            </div>
+            <!--end::Row-->
+            <!--begin::Row-->
+            <div class="row">
+              <!-- Start col -->
+              <div class="col-lg-7">
+                <div class="card mb-4 shadow-sm border-0">
+                  <div class="card-header">
+                    <h3 class="card-title">Distribusi Kategori Aset</h3>
+                  </div>
+                  <div class="card-body">
+                    <div id="category-chart"></div>
+                  </div>
+                </div>
+                <!-- /.card -->
+              </div>
+              <!-- /.Start col -->
+              <!-- Start col -->
+              <div class="col-lg-5">
+                <div class="card mb-4 shadow-sm border-0">
+                  <div class="card-header">
+                    <h3 class="card-title">Status Aset</h3>
+                  </div>
+                  <div class="card-body">
+                    <div id="status-chart"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- /.Start col -->
+            </div>
+            <!-- /.row (main row) -->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content-->
+
+    <!-- apexcharts -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        // Category Chart
+        const categoryOptions = {
+          series: [{
+            name: 'Jumlah Aset',
+            data: [
+              {{ range .categoryStats }}
+                {{ .Count }},
+              {{ end }}
+            ]
+          }],
+          chart: {
+            type: 'bar',
+            height: 350,
+            toolbar: {
+              show: false
+            },
+            fontFamily: 'inherit'
+          },
+          plotOptions: {
+            bar: {
+              borderRadius: 4,
+              horizontal: true,
+              distributed: true
+            }
+          },
+          dataLabels: {
+            enabled: true
+          },
+          xaxis: {
+            categories: [
+              {{ range .categoryStats }}
+                "{{ .Category }}",
+              {{ end }}
+            ],
+          },
+          colors: ['#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545', '#fd7e14', '#ffc107', '#198754', '#20c997', '#0dcaf0'],
+          legend: {
+            show: false
+          }
+        };
+
+        const categoryChart = new ApexCharts(document.querySelector("#category-chart"), categoryOptions);
+        categoryChart.render();
+
+        // Status Chart
+        const statusOptions = {
+          series: [
+            {{ range .statusStats }}
+              {{ .Count }},
+            {{ end }}
+          ],
+          chart: {
+            type: 'donut',
+            height: 350,
+            fontFamily: 'inherit'
+          },
+          labels: [
+            {{ range .statusStats }}
+              "{{ .Status }}",
+            {{ end }}
+          ],
+          plotOptions: {
+            pie: {
+              donut: {
+                size: '70%',
+                labels: {
+                  show: true,
+                  total: {
+                    show: true,
+                    label: 'Total',
+                    formatter: function (w) {
+                      return w.globals.seriesTotals.reduce((a, b) => {
+                        return a + b
+                      }, 0)
+                    }
+                  }
+                }
+              }
+            }
+          },
+          responsive: [{
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 200
+              },
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }],
+          colors: ['#198754', '#dc3545', '#ffc107', '#0d6efd', '#6c757d']
+        };
+
+        const statusChart = new ApexCharts(document.querySelector("#status-chart"), statusOptions);
+        statusChart.render();
+      });
+    </script>
+{{ end }}

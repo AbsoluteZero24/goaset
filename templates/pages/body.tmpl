@@ -1,0 +1,162 @@
+{{ define "pages/body" }}
+      <!--begin::Sidebar-->
+      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+        <!--begin::Sidebar Brand-->
+        <div class="sidebar-brand">
+          <!--begin::Brand Link-->
+          <a href="./index.html" class="brand-link">
+            <!--begin::Brand Image-->
+            <img
+              src="/public/assets/img/logo.png"
+              alt="GoAset Logo"
+              class="brand-image rounded-circle shadow"
+              style="width: 33px; height: 33px; object-fit: cover;"
+            />
+            <!--end::Brand Image-->
+            <!--begin::Brand Text-->
+            <span class="brand-text fw-light">GoAset</span>
+            <!--end::Brand Text-->
+          </a>
+          <!--end::Brand Link-->
+        </div>
+        <!--end::Sidebar Brand-->
+        <!--begin::Sidebar Wrapper-->
+        <div class="sidebar-wrapper">
+          <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul
+              class="nav sidebar-menu flex-column"
+              data-lte-toggle="treeview"
+              role="navigation"
+              aria-label="Main navigation"
+              data-accordion="false"
+              id="navigation"
+            >
+              <li class="nav-item">
+                <a href="/" class="nav-link">
+                  <i class="nav-icon bi bi-speedometer"></i>
+                  <p>Dashboard</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-archive"></i>
+                  <p>
+                    Inventori
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/inventori/aset-laptop" class="nav-link">
+                      <i class="nav-icon bi bi-laptop"></i>
+                      <p>Aset</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon bi bi-database"></i>
+                      <p>
+                        Master Data
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="/inventori/master-data/asset-category" class="nav-link">
+                          <i class="nav-icon bi bi-circle"></i>
+                          <p>Kategori Aset</p>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-file-earmark-text"></i>
+                  <p>
+                    Asset Management
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/asset-management/laptop" class="nav-link">
+                      <i class="nav-icon bi bi-laptop"></i>
+                      <p>Laptop</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/asset-management/komputer" class="nav-link">
+                      <i class="nav-icon bi bi-pc-display"></i>
+                      <p>Komputer</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-person-gear"></i>
+                  <p>
+                    Administration
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/administration/employee" class="nav-link">
+                      <i class="nav-icon bi bi-person"></i>
+                      <p>Employee List</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="nav-icon bi bi-database"></i>
+                      <p>
+                        Master Data Employee
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="/administration/master-data/branch" class="nav-link">
+                          <i class="nav-icon bi bi-circle"></i>
+                          <p>Master Cabang</p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="/administration/master-data/department" class="nav-link">
+                          <i class="nav-icon bi bi-circle"></i>
+                          <p>Master Bagian</p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="/administration/master-data/sub-department" class="nav-link">
+                          <i class="nav-icon bi bi-circle"></i>
+                          <p>Master Sub Bagian</p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="/administration/master-data/position" class="nav-link">
+                          <i class="nav-icon bi bi-circle"></i>
+                          <p>Master Jabatan</p>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <!--end::Sidebar Menu-->
+          </nav>
+        </div>
+        <!--end::Sidebar Wrapper-->
+      </aside>
+      <!--end::Sidebar-->
+      <!--begin::App Main-->
+      <main class="app-main">
+        {{yield}}
+      </main>
+      <!--end::App Main-->
+{{ end }}

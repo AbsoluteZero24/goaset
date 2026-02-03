@@ -1,0 +1,413 @@
+{{ define "assets/komputer_management" }}
+<style>
+  /* Custom DataTables Styling */
+  .datatable-wrapper .datatable-top {
+    padding: 15px 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .datatable-wrapper .datatable-bottom {
+    padding: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #dee2e6;
+    margin-top: 10px;
+  }
+
+  /* Move selector to bottom next to info */
+  .datatable-wrapper .datatable-top .datatable-dropdown {
+    display: none;
+  }
+
+  .datatable-bottom-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .datatable-input {
+    border: 1px solid #0d6efd;
+    border-radius: 8px;
+    padding: 8px 15px;
+    background-color: #fff;
+    color: #000;
+    transition: all 0.3s ease;
+    min-width: 250px;
+  }
+
+  .datatable-input:focus {
+    box-shadow: 0 0 0 0.25 margin #0d6efd40;
+    outline: none;
+    border-color: #0b5ed7;
+  }
+
+  .datatable-selector {
+    border: 1px solid #0d6efd;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #000;
+  }
+
+  /* Premium Table Styling */
+  #table-komputer {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+  }
+
+  #table-komputer thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #0d6efd !important;
+    font-weight: 600;
+    color: #333;
+    padding: 12px;
+  }
+
+  #table-komputer tbody td {
+    border: 1px solid #dee2e6 !important;
+    padding: 12px;
+    vertical-align: middle;
+  }
+
+  #table-komputer tbody tr:hover {
+    background-color: #f1f7ff;
+    transition: background-color 0.2s;
+  }
+
+  /* Badge Styling */
+  .badge {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+
+  /* Modal Zoom Effect */
+  .modal.fade .modal-dialog {
+    transform: scale(0.9);
+    transition: transform 0.3s ease-out;
+  }
+  .modal.show .modal-dialog {
+    transform: scale(1);
+  }
+  /* TomSelect Premium Styling */
+  .ts-wrapper.single .ts-control {
+    border: 1px solid #0d6efd !important;
+    border-radius: 8px !important;
+    padding: 10px 15px !important;
+    font-size: 14px !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+  
+  .ts-wrapper.single .ts-control::after {
+    border-color: #0d6efd transparent transparent transparent !important;
+    right: 15px !important;
+  }
+
+  .ts-dropdown {
+    border-radius: 8px !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    border: 1px solid #dee2e6 !important;
+    margin-top: 5px !important;
+    padding: 5px !important;
+  }
+
+  .ts-dropdown .optgroup-header {
+    font-weight: bold;
+    color: #0d6efd;
+    padding: 8px 12px;
+  }
+
+  .ts-dropdown .option {
+    padding: 10px 12px !important;
+    border-radius: 6px !important;
+    cursor: pointer;
+    color: #333;
+  }
+
+  .ts-dropdown .active {
+    background-color: #0d6efd !important;
+    color: #fff !important;
+  }
+
+  /* Search box inside dropdown */
+  .ts-dropdown .dropdown-input-wrap {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .ts-dropdown .dropdown-input {
+    border: 1px solid #0d6efd !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    width: 100% !important;
+    outline: none !important;
+    color: #000 !important;
+  }
+
+  .employee-option {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .employee-name {
+    font-weight: 600;
+  }
+
+  .employee-meta {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+</style>
+        <!--begin::App Content Header-->
+        <div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">{{ .title }}</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="/">Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Komputer Management</li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content Header-->
+        <!--begin::App Content-->
+        <div class="app-content">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header d-flex align-items-center justify-content-between">
+                    <h3 class="card-title">Data Pemegang Aset Komputer</h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <table class="table table-bordered" id="table-komputer">
+                      <thead>
+                        <tr>
+                          <th style="width: 10px">No</th>
+                          <th>No. Inventaris</th>
+                          <th>Nama Aset</th>
+                          <th>Label</th>
+                          <th>Nama</th>
+                          <th>Cabang</th>
+                          <th>Jabatan</th>
+                          <th>Status Karyawan</th>
+                          <th style="width: 60px">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {{ range $index, $asset := .assets }}
+                        <tr>
+                          <td>{{ add $index 1 }}.</td>
+                          <td>{{ $asset.InventoryNumber }}</td>
+                          <td>{{ $asset.AssetName }}</td>
+                          <td>{{ $asset.DeviceName }}</td>
+                          <td>{{ if $asset.User.Name }}{{ $asset.User.Name }}{{ else }}<span class="text-muted">Not Assigned</span>{{ end }}</td>
+                          <td>{{ if $asset.User.Branch }}{{ $asset.User.Branch }}{{ else }}-{{ end }}</td>
+                          <td>{{ if $asset.User.Position }}{{ $asset.User.Position }}{{ else }}-{{ end }}</td>
+                          <td>
+                            {{ if $asset.User.StatusKaryawan }}
+                              {{ if eq $asset.User.StatusKaryawan "Tetap" }}
+                                <span class="badge bg-primary">Tetap</span>
+                              {{ else }}
+                                <span class="badge bg-info">{{ $asset.User.StatusKaryawan }}</span>
+                              {{ end }}
+                            {{ else }}
+                              -
+                            {{ end }}
+                          </td>
+                          <td>
+                            <button type="button" class="btn btn-warning btn-sm btn-assign" data-bs-toggle="modal" data-bs-target="#modalAssign" data-bs-id="{{ $asset.ID }}" data-bs-user="{{ if $asset.UserID }}{{ $asset.UserID }}{{ end }}" data-bs-assetname="{{ $asset.AssetName }} ({{ $asset.InventoryNumber }})">
+                              <i class="bi bi-person-plus"></i>
+                            </button>
+                          </td>
+                        </tr>
+                        {{ end }}
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+            </div>
+            <!-- /.row -->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content-->
+
+<!-- Modal Assign Employee -->
+<div class="modal fade" id="modalAssign" tabindex="-1" aria-labelledby="modalAssignLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAssignLabel">Assign Employee to Asset</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/asset-management/komputer/assign" method="POST">
+        <div class="modal-body">
+          <input type="hidden" name="asset_id" id="modal_asset_id">
+          <div class="mb-3">
+            <label class="form-label">Asset</label>
+            <input type="text" class="form-control" id="modal_asset_info" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="user_id" class="form-label">Employee List</label>
+            <select name="user_id" id="modal_user_id" class="form-control select2" style="width: 100%;">
+              <option value="">-- Unassign / Kosongkan --</option>
+              {{ range .users }}
+                <option value="{{ .ID }}">{{ .Name }} - {{ .NIK }} ({{ .Branch }})</option>
+              {{ end }}
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Initialize DataTables (Simple-DataTables)
+    const tableElement = document.getElementById('table-komputer');
+    if (tableElement) {
+        const dataTable = new simpleDatatables.DataTable(tableElement, {
+            searchable: true,
+            fixedHeight: false,
+            perPage: 10,
+            labels: {
+                placeholder: "Cari data komputer...",
+                perPage: "{select}",
+                noRows: "Data tidak ditemukan",
+                info: "Menampilkan {start} sampai {end} dari {rows} data",
+            }
+        });
+
+        // Move the selector to bottom after init
+        dataTable.on("datatable.init", () => {
+            const topDropdown = document.querySelector(".datatable-top .datatable-dropdown");
+            const bottomContainer = document.querySelector(".datatable-bottom");
+            
+            if (topDropdown && bottomContainer) {
+                const bottomLeft = document.createElement("div");
+                bottomLeft.className = "datatable-bottom-left";
+                
+                // Clone the dropdown to move it
+                const newDropdown = topDropdown.cloneNode(true);
+                newDropdown.style.display = "block";
+                
+                // Clear any leftover text like "{select}" from the label
+                const label = newDropdown.querySelector("label");
+                if (label) {
+                    // Keep only the select element, remove text nodes
+                    const selector = label.querySelector(".datatable-selector");
+                    label.innerHTML = "";
+                    if (selector) label.appendChild(selector);
+                }
+                
+                bottomLeft.appendChild(newDropdown);
+                
+                // Find info element and move it into bottomLeft
+                const info = bottomContainer.querySelector(".datatable-info");
+                if (info) bottomLeft.appendChild(info);
+                
+                bottomContainer.insertBefore(bottomLeft, bottomContainer.firstChild);
+                
+                // Remove original top dropdown
+                topDropdown.remove();
+
+                // Re-bind the event for the new selector because cloning doesn't keep events
+                const newSelector = newDropdown.querySelector(".datatable-selector");
+                if (newSelector) {
+                    newSelector.addEventListener("change", (e) => {
+                        dataTable.page.len(parseInt(e.target.value));
+                    });
+                }
+            }
+        });
+    }
+
+    // 2. Initialize TomSelect for Employee Search
+    let tomSelectInstance = null;
+    const modalSelect = document.getElementById('modal_user_id');
+    if (modalSelect) {
+        tomSelectInstance = new TomSelect(modalSelect, {
+            plugins: ['dropdown_input'],
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            placeholder: "-- Cari & Pilih Karyawan --",
+            allowEmptyOption: true,
+            maxOptions: 1000,
+            render: {
+                option: function(data, escape) {
+                    if (data.value === "") return '<div class="option text-muted">-- Unassign / Kosongkan --</div>';
+                    const parts = data.text.split(' - ');
+                    const name = parts[0];
+                    const meta = parts.slice(1).join(' - ');
+                    return `
+                        <div class="option">
+                            <div class="employee-option">
+                                <span class="employee-name">${escape(name)}</span>
+                                <span class="employee-meta">${escape(meta)}</span>
+                            </div>
+                        </div>`;
+                },
+                item: function(data, escape) {
+                    return `<div>${escape(data.text)}</div>`;
+                }
+            }
+        });
+    }
+
+    // 3. Modal Event Handling (Bootstrap 5 way)
+    const modalAssign = document.getElementById('modalAssign');
+    if (modalAssign) {
+        modalAssign.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            const button = event.relatedTarget;
+            
+            // Extract info from data-bs-* attributes
+            const assetId = button.getAttribute('data-bs-id');
+            const userId = button.getAttribute('data-bs-user');
+            const assetName = button.getAttribute('data-bs-assetname');
+
+            // Update the modal's content.
+            const modalAssetId = modalAssign.querySelector('#modal_asset_id');
+            const modalAssetInfo = modalAssign.querySelector('#modal_asset_info');
+            
+            modalAssetId.value = assetId;
+            modalAssetInfo.value = assetName;
+            
+            if (tomSelectInstance) {
+                tomSelectInstance.setValue(userId || "");
+            }
+        });
+    }
+});
+</script>
+{{ end }}

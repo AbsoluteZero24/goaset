@@ -1,0 +1,98 @@
+{{ define "assets/asetkso_form" }}
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <h3 class="mb-0">{{ .title }}</h3>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/inventori/aset-laptop">Aset KSO</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ .title }}</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="app-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8 mx-auto">
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Form Aset KSO</h3>
+          </div>
+          <form action="{{ if .asset }}/inventori/aset-laptop/update/{{ .asset.ID }}{{ else }}/inventori/aset-laptop{{ end }}" method="POST">
+            <div class="card-body">
+              <input type="hidden" name="redirect_to" value="/inventori/aset-laptop">
+              <div class="form-group mb-3">
+                <label for="inventory_number">No. Inventaris</label>
+                <input type="text" name="inventory_number" class="form-control" id="inventory_number" placeholder="Masukkan No. Inventaris" value="{{ if .asset }}{{ .asset.InventoryNumber }}{{ end }}" required>
+              </div>
+              <div class="form-group mb-3">
+                <label for="asset_name">Nama Aset</label>
+                <input type="text" name="asset_name" class="form-control" id="asset_name" placeholder="Masukkan Nama Aset" value="{{ if .asset }}{{ .asset.AssetName }}{{ end }}" required>
+              </div>
+              <div class="form-group mb-3">
+                <label for="category">Kategori</label>
+                <select name="category" class="form-control" id="category" required>
+                  <option value="">-- Pilih Kategori --</option>
+                  {{ range .categories }}
+                  <option value="{{ .Name }}" {{ if $.asset }}{{ if eq $.asset.Category .Name }}selected{{ end }}{{ else }}{{ if eq $.category .Name }}selected{{ end }}{{ end }}>{{ .Name }}</option>
+                  {{ end }}
+                </select>
+              </div>
+              <div class="form-group mb-3">
+                <label for="brand">Merk / Brand</label>
+                <input type="text" name="brand" class="form-control" id="brand" placeholder="Masukkan Merk" value="{{ if .asset }}{{ .asset.Brand }}{{ end }}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="specification">Spesifikasi</label>
+                <textarea name="specification" class="form-control" id="specification" rows="3" placeholder="Masukkan Spesifikasi">{{ if .asset }}{{ .asset.Specification }}{{ end }}</textarea>
+              </div>
+              <div class="form-group mb-3">
+                <label for="color">Warna</label>
+                <input type="text" name="color" class="form-control" id="color" placeholder="Masukkan Warna" value="{{ if .asset }}{{ .asset.Color }}{{ end }}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="location">Lokasi</label>
+                <input type="text" name="location" class="form-control" id="location" placeholder="Masukkan Lokasi" value="{{ if .asset }}{{ .asset.Location }}{{ end }}">
+              </div>
+              <div class="form-group mb-3">
+                <label for="purchase_date">Tanggal Pembelian</label>
+                <input type="text" name="purchase_date" class="form-control bg-white" id="purchase_date" value="{{ if .asset }}{{ .asset.PurchaseDate.Format "2006-01-02" }}{{ end }}" required placeholder="Pilih Tanggal">
+              </div>
+              <div class="form-group mb-3">
+                <label for="status">Status</label>
+                <select name="status" class="form-control" id="status" required>
+                  <option value="Ready" {{ if .asset }}{{ if eq .asset.Status "Ready" }}selected{{ end }}{{ end }}>Ready</option>
+                  <option value="Rusak" {{ if .asset }}{{ if eq .asset.Status "Rusak" }}selected{{ end }}{{ end }}>Rusak</option>
+                  <option value="Hilang" {{ if .asset }}{{ if eq .asset.Status "Hilang" }}selected{{ end }}{{ end }}>Hilang</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary">Simpan</button>
+              <a href="/inventori/aset-laptop" class="btn btn-secondary">Batal</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('purchase_date');
+    const isEdit = dateInput.value !== "";
+    
+    flatpickr("#purchase_date", {
+      dateFormat: "Y-m-d",
+      defaultDate: isEdit ? dateInput.value : "today",
+      allowInput: true
+    });
+  });
+</script>
+{{ end }}
