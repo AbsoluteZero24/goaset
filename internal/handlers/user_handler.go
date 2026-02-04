@@ -12,7 +12,7 @@ func (server *Server) ListEmployees(w http.ResponseWriter, r *http.Request) {
 	var users []models.User
 	server.DB.Find(&users)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/employee", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/employee", map[string]interface{}{
 		"title": "Daftar Karyawan",
 		"users": users,
 	})
@@ -25,7 +25,7 @@ func (server *Server) CreateEmployeeForm(w http.ResponseWriter, r *http.Request)
 	server.DB.Preload("Departments.SubDepartments").Find(&branches)
 	server.DB.Find(&positions)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/employee_form", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/employee_form", map[string]interface{}{
 		"title":     "Tambah Karyawan",
 		"branches":  branches,
 		"positions": positions,
@@ -72,7 +72,7 @@ func (server *Server) EditEmployeeForm(w http.ResponseWriter, r *http.Request) {
 	server.DB.Preload("Departments.SubDepartments").Find(&branches)
 	server.DB.Find(&positions)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/employee_form", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/employee_form", map[string]interface{}{
 		"title":     "Edit Karyawan",
 		"user":      user,
 		"branches":  branches,

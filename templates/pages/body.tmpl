@@ -4,7 +4,7 @@
         <!--begin::Sidebar Brand-->
         <div class="sidebar-brand">
           <!--begin::Brand Link-->
-          <a href="./index.html" class="brand-link">
+          <a href="/" class="brand-link">
             <!--begin::Brand Image-->
             <img
               src="/public/assets/img/logo.png"
@@ -38,6 +38,7 @@
                   <p>Dashboard</p>
                 </a>
               </li>
+              {{ if .Permissions.inventori }}
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-archive"></i>
@@ -72,6 +73,8 @@
                   </li>
                 </ul>
               </li>
+              {{ end }}
+              {{ if .Permissions.asset_management }}
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-file-earmark-text"></i>
@@ -95,6 +98,8 @@
                   </li>
                 </ul>
               </li>
+              {{ end }}
+              {{ if .Permissions.administration }}
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-person-gear"></i>
@@ -147,6 +152,32 @@
                   </li>
                 </ul>
               </li>
+              {{ end }}
+              {{ if eq .AdminRole "super_admin" }}
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon bi bi-gear"></i>
+                  <p>
+                    Setting
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/setting/user" class="nav-link">
+                      <i class="nav-icon bi bi-people"></i>
+                      <p>User</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/setting/role" class="nav-link">
+                      <i class="nav-icon bi bi-shield-lock"></i>
+                      <p>Role</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              {{ end }}
             </ul>
             <!--end::Sidebar Menu-->
           </nav>

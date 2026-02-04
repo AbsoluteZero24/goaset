@@ -16,7 +16,7 @@ func (server *Server) ListAssetKSO(w http.ResponseWriter, r *http.Request) {
 	var assets []models.AssetKSO
 	server.DB.Preload("User").Find(&assets)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "assets/asetkso", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "assets/asetkso", map[string]interface{}{
 		"title":  "Daftar Aset KSO",
 		"assets": assets,
 	})
@@ -26,7 +26,7 @@ func (server *Server) CreateAssetKSOForm(w http.ResponseWriter, r *http.Request)
 	var categories []models.MasterAssetCategory
 	server.DB.Find(&categories)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "assets/asetkso_form", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "assets/asetkso_form", map[string]interface{}{
 		"title":      "Tambah Aset KSO",
 		"categories": categories,
 	})
@@ -80,7 +80,7 @@ func (server *Server) CreateAssetKSOBulkForm(w http.ResponseWriter, r *http.Requ
 	var categories []models.MasterAssetCategory
 	server.DB.Find(&categories)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "assets/asetkso_bulk_form", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "assets/asetkso_bulk_form", map[string]interface{}{
 		"title":      "Sisipan Masal Aset KSO",
 		"categories": categories,
 	})
@@ -171,7 +171,7 @@ func (server *Server) EditAssetKSOForm(w http.ResponseWriter, r *http.Request) {
 	var categories []models.MasterAssetCategory
 	server.DB.Find(&categories)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "assets/asetkso_form", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "assets/asetkso_form", map[string]interface{}{
 		"title":      "Edit Aset",
 		"asset":      asset,
 		"categories": categories,
@@ -243,7 +243,7 @@ func (server *Server) ListAssetLaptop(w http.ResponseWriter, r *http.Request) {
 	var users []models.User
 	server.DB.Find(&users)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "assets/laptop_management", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "assets/laptop_management", map[string]interface{}{
 		"title":  "Asset Management - Laptop",
 		"assets": assets,
 		"users":  users,
@@ -254,7 +254,7 @@ func (server *Server) CreateAssetLaptopForm(w http.ResponseWriter, r *http.Reque
 	var users []models.User
 	server.DB.Find(&users)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "assets/laptop_mgmt_form", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "assets/laptop_mgmt_form", map[string]interface{}{
 		"title":    "Tambah Laptop",
 		"category": "Laptop",
 		"users":    users,
@@ -274,7 +274,7 @@ func (server *Server) EditAssetLaptopForm(w http.ResponseWriter, r *http.Request
 	var users []models.User
 	server.DB.Find(&users)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "assets/laptop_mgmt_form", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "assets/laptop_mgmt_form", map[string]interface{}{
 		"title": "Edit Laptop",
 		"asset": asset,
 		"users": users,
@@ -319,7 +319,7 @@ func (server *Server) ListAssetKomputer(w http.ResponseWriter, r *http.Request) 
 	var users []models.User
 	server.DB.Find(&users)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "assets/komputer_management", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "assets/komputer_management", map[string]interface{}{
 		"title":  "Asset Management - Komputer",
 		"assets": assets,
 		"users":  users,
@@ -330,7 +330,7 @@ func (server *Server) CreateAssetKomputerForm(w http.ResponseWriter, r *http.Req
 	var users []models.User
 	server.DB.Find(&users)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "assets/komputer_mgmt_form", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "assets/komputer_mgmt_form", map[string]interface{}{
 		"title":    "Tambah Komputer",
 		"category": "Komputer",
 		"users":    users,
@@ -350,7 +350,7 @@ func (server *Server) EditAssetKomputerForm(w http.ResponseWriter, r *http.Reque
 	var users []models.User
 	server.DB.Find(&users)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "assets/komputer_mgmt_form", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "assets/komputer_mgmt_form", map[string]interface{}{
 		"title": "Edit Komputer",
 		"asset": asset,
 		"users": users,
@@ -386,4 +386,34 @@ func (server *Server) AssignAssetKomputer(w http.ResponseWriter, r *http.Request
 	}
 
 	http.Redirect(w, r, "/asset-management/komputer", http.StatusSeeOther)
+}
+
+func (server *Server) UpdateAssetLabel(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	id := r.FormValue("asset_id")
+	newLabel := r.FormValue("device_name")
+	redirectPath := r.FormValue("redirect_to")
+
+	var asset models.AssetKSO
+	if err := server.DB.Where("id = ?", id).First(&asset).Error; err != nil {
+		if redirectPath != "" {
+			http.Redirect(w, r, redirectPath, http.StatusSeeOther)
+		} else {
+			http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		}
+		return
+	}
+
+	asset.DeviceName = newLabel
+	server.DB.Save(&asset)
+
+	if redirectPath == "" {
+		redirectPath = "/dashboard"
+	}
+	http.Redirect(w, r, redirectPath, http.StatusSeeOther)
 }

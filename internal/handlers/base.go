@@ -87,6 +87,26 @@ func (server *Server) InitCommands(appConfig config.AppConfig, dbConfig config.D
 				return nil
 			},
 		},
+		{
+			Name: "db:seed_admin",
+			Action: func(c *cli.Context) error {
+				err := seeders.SeedAdmin(server.DB)
+				if err != nil {
+					log.Fatal(err)
+				}
+				return nil
+			},
+		},
+		{
+			Name: "db:seed_permission",
+			Action: func(c *cli.Context) error {
+				err := seeders.SeedPermissions(server.DB)
+				if err != nil {
+					log.Fatal(err)
+				}
+				return nil
+			},
+		},
 	}
 
 	err = cmdApp.Run(os.Args)
@@ -98,4 +118,30 @@ func (server *Server) InitCommands(appConfig config.AppConfig, dbConfig config.D
 func (server *Server) parseUint(s string) uint {
 	u, _ := strconv.ParseUint(s, 10, 32)
 	return uint(u)
+}
+
+// RenderHTML wraps renderer.HTML to include global data like Admin info
+func (server *Server) RenderHTML(w http.ResponseWriter, r *http.Request, status int, name string, binding interface{}) {
+	var data map[string]interface{}
+
+	if binding == nil {
+		data = make(map[string]interface{})
+	} else {
+		// Convert binding to map if possible, or wrap it
+		if m, ok := binding.(map[string]interface{}); ok {
+			data = m
+		} else {
+			data = map[string]interface{}{
+				"Data": binding,
+			}
+		}
+	}
+
+	// Add Admin Data
+	adminData := server.GetAdminData(r)
+	for k, v := range adminData {
+		data[k] = v
+	}
+
+	_ = server.Renderer.HTML(w, status, name, data)
 }

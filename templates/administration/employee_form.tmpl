@@ -18,73 +18,115 @@
 <div class="app-content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-8 mx-auto">
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">Form Karyawan</h3>
+      <div class="col-md-10 mx-auto">
+        <div class="card card-primary card-outline shadow-sm">
+          <div class="card-header border-0 pb-0">
+            <h3 class="card-title fw-bold">
+              <i class="bi {{ if .user }}bi-person-check-fill{{ else }}bi-person-plus-fill{{ end }} me-2"></i>
+              Data Informasi Karyawan
+            </h3>
           </div>
           <form action="{{ if .user }}/administration/employee/update/{{ .user.ID }}{{ else }}/administration/employee{{ end }}" method="POST">
-            <div class="card-body">
-              <div class="form-group mb-3">
-                <label for="nik">NIK</label>
-                <input type="text" name="nik" class="form-control" id="nik" placeholder="Masukkan NIK" value="{{ if .user }}{{ .user.NIK }}{{ end }}" required>
-              </div>
-              <div class="form-group mb-3">
-                <label for="name">Nama Lengkap</label>
-                <input type="text" name="name" class="form-control" id="name" placeholder="Masukkan Nama" value="{{ if .user }}{{ .user.Name }}{{ end }}" required>
-              </div>
-              <div class="form-group mb-3">
-                <label for="email">Email</label>
-                <input type="email" name="email" class="form-control" id="email" placeholder="Masukkan Email" value="{{ if .user }}{{ .user.Email }}{{ end }}" required>
-              </div>
-                <div class="form-group mb-3">
-                 <label for="branch">Cabang</label>
-                 <select name="branch" class="form-control" id="branch" required onchange="updateDepartments()">
-                   <option value="">-- Pilih Cabang --</option>
-                   {{ range $branch := .branches }}
-                   <option value="{{ $branch.Name }}" data-id="{{ $branch.ID }}" {{ if $.user }}{{ if eq $.user.Branch $branch.Name }}selected{{ end }}{{ end }}>{{ $branch.Name }}</option>
-                   {{ end }}
-                 </select>
-               </div>
-               <div class="form-group mb-3">
-                 <label for="department">Bagian</label>
-                 <select name="department" class="form-control" id="department" required onchange="updateSubDepartments()">
-                   <option value="">-- Pilih Bagian --</option>
-                   {{ if $.user }}
-                    <option value="{{ $.user.Department }}" selected>{{ $.user.Department }}</option>
-                   {{ end }}
-                 </select>
-               </div>
-               <div class="form-group mb-3">
-                 <label for="sub_department">Sub Bagian</label>
-                 <select name="sub_department" class="form-control" id="sub_department" required>
-                   <option value="">-- Pilih Sub Bagian --</option>
-                   {{ if $.user }}
-                    <option value="{{ $.user.SubDepartment }}" selected>{{ $.user.SubDepartment }}</option>
-                   {{ end }}
-                 </select>
-               </div>
-               <div class="form-group mb-3">
-                 <label for="position">Jabatan</label>
-                 <select name="position" class="form-control" id="position" required>
-                   <option value="">-- Pilih Jabatan --</option>
-                   {{ range $pos := .positions }}
-                   <option value="{{ $pos.Name }}" {{ if $.user }}{{ if eq $.user.Position $pos.Name }}selected{{ end }}{{ end }}>{{ $pos.Name }}</option>
-                   {{ end }}
-                 </select>
-               </div>
-              <div class="form-group mb-3">
-                <label for="status_karyawan">Status Karyawan</label>
-                <select name="status_karyawan" class="form-control" id="status_karyawan" required>
-                  <option value="Tetap" {{ if .user }}{{ if eq .user.StatusKaryawan "Tetap" }}selected{{ end }}{{ end }}>Tetap</option>
-                  <option value="Kontrak" {{ if .user }}{{ if eq .user.StatusKaryawan "Kontrak" }}selected{{ end }}{{ end }}>Kontrak</option>
-                  <option value="Magang" {{ if .user }}{{ if eq .user.StatusKaryawan "Magang" }}selected{{ end }}{{ end }}>Magang</option>
-                </select>
+            <div class="card-body p-4">
+              <div class="row">
+                <!-- Data Personal -->
+                <div class="col-md-6 pe-md-4 border-end">
+                  <h6 class="text-uppercase text-muted fw-bold small mb-4">Informasi Personal</h6>
+                  <div class="mb-3">
+                    <label for="nik" class="form-label fw-semibold">NIK</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light text-muted"><i class="bi bi-card-text"></i></span>
+                      <input type="text" name="nik" class="form-control" id="nik" placeholder="Masukkan NIK" value="{{ if .user }}{{ .user.NIK }}{{ end }}" required>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light text-muted"><i class="bi bi-person"></i></span>
+                      <input type="text" name="name" class="form-control" id="name" placeholder="Masukkan Nama" value="{{ if .user }}{{ .user.Name }}{{ end }}" required>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label for="email" class="form-label fw-semibold">Email Perusahaan</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light text-muted"><i class="bi bi-envelope"></i></span>
+                      <input type="email" name="email" class="form-control" id="email" placeholder="Masukkan Email" value="{{ if .user }}{{ .user.Email }}{{ end }}" required>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Penempatan Kerja -->
+                <div class="col-md-6 ps-md-4">
+                  <h6 class="text-uppercase text-muted fw-bold small mb-4">Penempatan Kerja</h6>
+                  <div class="mb-3">
+                    <label for="branch" class="form-label fw-semibold">Cabang</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light text-muted"><i class="bi bi-building"></i></span>
+                      <select name="branch" class="form-select" id="branch" required onchange="updateDepartments()">
+                        <option value="">-- Pilih Cabang --</option>
+                        {{ range $branch := .branches }}
+                        <option value="{{ $branch.Name }}" data-id="{{ $branch.ID }}" {{ if $.user }}{{ if eq $.user.Branch $branch.Name }}selected{{ end }}{{ end }}>{{ $branch.Name }}</option>
+                        {{ end }}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="department" class="form-label fw-semibold">Bagian</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light text-muted"><i class="bi bi-diagram-3"></i></span>
+                      <select name="department" class="form-select" id="department" required onchange="updateSubDepartments()">
+                        <option value="">-- Pilih Bagian --</option>
+                        {{ if $.user }}
+                         <option value="{{ $.user.Department }}" selected>{{ $.user.Department }}</option>
+                        {{ end }}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="sub_department" class="form-label fw-semibold">Sub Bagian</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light text-muted"><i class="bi bi-layers"></i></span>
+                      <select name="sub_department" class="form-select" id="sub_department" required>
+                        <option value="">-- Pilih Sub Bagian --</option>
+                        {{ if $.user }}
+                         <option value="{{ $.user.SubDepartment }}" selected>{{ $.user.SubDepartment }}</option>
+                        {{ end }}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="position" class="form-label fw-semibold">Jabatan</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light text-muted"><i class="bi bi-person-badge"></i></span>
+                      <select name="position" class="form-select" id="position" required>
+                        <option value="">-- Pilih Jabatan --</option>
+                        {{ range $pos := .positions }}
+                        <option value="{{ $pos.Name }}" {{ if $.user }}{{ if eq $.user.Position $pos.Name }}selected{{ end }}{{ end }}>{{ $pos.Name }}</option>
+                        {{ end }}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="status_karyawan" class="form-label fw-semibold">Status Karyawan</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light text-muted"><i class="bi bi-briefcase"></i></span>
+                      <select name="status_karyawan" class="form-select" id="status_karyawan" required>
+                        <option value="Tetap" {{ if .user }}{{ if eq .user.StatusKaryawan "Tetap" }}selected{{ end }}{{ end }}>Tetap</option>
+                        <option value="Kontrak" {{ if .user }}{{ if eq .user.StatusKaryawan "Kontrak" }}selected{{ end }}{{ end }}>Kontrak</option>
+                        <option value="Magang" {{ if .user }}{{ if eq .user.StatusKaryawan "Magang" }}selected{{ end }}{{ end }}>Magang</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="card-footer">
-              <button type="submit" class="btn btn-primary">Simpan</button>
-              <a href="/administration/employee" class="btn btn-secondary">Batal</a>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-4 px-4 d-flex gap-2">
+              <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">
+                <i class="bi bi-save me-1"></i> Simpan Data
+              </button>
+              <a href="/administration/employee" class="btn btn-outline-secondary px-4 fw-semibold">
+                Batal
+              </a>
             </div>
           </form>
         </div>
@@ -164,9 +206,6 @@
   window.onload = function() {
     const branchSelect = document.getElementById('branch');
     if (branchSelect.value) {
-      // Keep existing values or re-populate
-      // For simplicity, we just leave the initial values which were set by template if in edit mode.
-      // But we need to make sure the dropdowns are populated so user can change them.
       const initialDept = "{{ if .user }}{{ .user.Department }}{{ end }}";
       const initialSub = "{{ if .user }}{{ .user.SubDepartment }}{{ end }}";
       

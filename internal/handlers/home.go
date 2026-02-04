@@ -33,7 +33,7 @@ func (server *Server) Home(w http.ResponseWriter, r *http.Request) {
 	var statusStats []StatusStat
 	server.DB.Model(&models.AssetKSO{}).Select("status, count(*) as count").Group("status").Scan(&statusStats)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "home", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "home", map[string]interface{}{
 		"title":          "Dashboard",
 		"totalAssets":    totalAssets,
 		"readyAssets":    readyAssets,

@@ -1,4 +1,34 @@
 {{ define "inventori/master_data/asset_category" }}
+<style>
+  /* Premium Table Styling */
+  #table-assetcat {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+  }
+
+  #table-assetcat thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #0d6efd !important;
+    font-weight: 600;
+    color: #333;
+    padding: 12px;
+  }
+
+  #table-assetcat tbody td {
+    border: 1px solid #dee2e6 !important;
+    padding: 12px;
+    vertical-align: middle;
+  }
+
+  #table-assetcat tbody tr:hover {
+    background-color: #f1f7ff;
+    transition: background-color 0.2s;
+  }
+</style>
+
 <div class="app-content-header">
   <div class="container-fluid">
     <div class="row">
@@ -16,14 +46,14 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-4">
-        <div class="card card-primary">
+        <div class="card card-primary card-outline">
           <div class="card-header">
             <h3 class="card-title">{{ if .category }}Edit{{ else }}Tambah{{ end }} Kategori</h3>
           </div>
           <form action="{{ if .category }}/inventori/master-data/asset-category/update/{{ .category.ID }}{{ else }}/inventori/master-data/asset-category/store{{ end }}" method="POST">
             <div class="card-body">
-              <div class="form-group">
-                <label for="name">Nama Kategori</label>
+              <div class="mb-3">
+                <label for="name" class="form-label">Nama Kategori</label>
                 <input type="text" name="name" class="form-control" id="name" placeholder="Masukkan nama kategori" value="{{ if .category }}{{ .category.Name }}{{ end }}" required>
               </div>
             </div>
@@ -41,20 +71,20 @@
           <div class="card-header">
             <h3 class="card-title">Daftar Kategori Aset</h3>
           </div>
-          <div class="card-body p-0">
-            <table class="table table-striped">
+          <div class="card-body">
+            <table class="table table-bordered" id="table-assetcat">
               <thead>
                 <tr>
-                  <th style="width: 10px">#</th>
+                  <th style="width: 50px">No</th>
                   <th>Nama Kategori</th>
-                  <th style="width: 40px">Aksi</th>
+                  <th style="width: 100px">Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {{ range $index, $cat := .categories }}
                 <tr>
-                  <td>{{ add $index 1 }}</td>
-                  <td>{{ $cat.Name }}</td>
+                  <td>{{ add $index 1 }}.</td>
+                  <td><strong>{{ $cat.Name }}</strong></td>
                   <td>
                     <div class="btn-group">
                       <a href="/inventori/master-data/asset-category/edit/{{ $cat.ID }}" class="btn btn-warning btn-sm">

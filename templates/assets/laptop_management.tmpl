@@ -38,7 +38,7 @@
   }
 
   .datatable-input:focus {
-    box-shadow: 0 0 0 0.25 margin #0d6efd40;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     outline: none;
     border-color: #0b5ed7;
   }
@@ -52,7 +52,7 @@
     color: #000;
   }
 
-  /* Premium Table Styling */
+  /* Premium Table Styling (Matched to Aset KSO) */
   #table-laptop {
     border-collapse: separate !important;
     border-spacing: 0 !important;
@@ -64,9 +64,10 @@
   #table-laptop thead th {
     background-color: #f8f9fa;
     border-bottom: 2px solid #0d6efd !important;
-    font-weight: 600;
+    font-weight: 400;
     color: #333;
     padding: 12px;
+    text-align: center;
   }
 
   #table-laptop tbody td {
@@ -84,7 +85,17 @@
   .badge {
     padding: 6px 10px;
     border-radius: 6px;
-    font-weight: 500;
+  }
+
+  /* Fixed Sequential Row Numbering */
+  #table-laptop {
+    counter-reset: rowNumber;
+  }
+  #table-laptop tbody tr {
+    counter-increment: rowNumber;
+  }
+  #table-laptop tbody tr td:first-child::before {
+    content: counter(rowNumber) ".";
   }
 
   /* Modal Zoom Effect */
@@ -95,6 +106,7 @@
   .modal.show .modal-dialog {
     transform: scale(1);
   }
+  
   /* TomSelect Premium Styling */
   .ts-wrapper.single .ts-control {
     border: 1px solid #0d6efd !important;
@@ -136,35 +148,12 @@
     color: #fff !important;
   }
 
-  /* Search box inside dropdown */
-  .ts-dropdown .dropdown-input-wrap {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
+  /* Action Buttons styling */
+  .btn-group-sm > .btn, .btn-sm {
+      padding: .25rem .5rem;
+      font-size: .875rem;
+      border-radius: .25rem;
   }
-
-  .ts-dropdown .dropdown-input {
-    border: 1px solid #0d6efd !important;
-    border-radius: 6px !important;
-    padding: 8px 12px !important;
-    width: 100% !important;
-    outline: none !important;
-    color: #000 !important;
-  }
-
-  .employee-option {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .employee-name {
-    font-weight: 600;
-  }
-
-  .employee-meta {
-    font-size: 12px;
-    opacity: 0.8;
-  }
-
 </style>
         <!--begin::App Content Header-->
         <div class="app-content-header">
@@ -209,14 +198,14 @@
                           <th>Cabang</th>
                           <th>Jabatan</th>
                           <th>Status Karyawan</th>
-                          <th style="width: 60px">Aksi</th>
+                          <th style="width: 80px">Aksi</th>
                         </tr>
                       </thead>
                       <tbody>
                         {{ range $index, $asset := .assets }}
                         <tr>
-                          <td>{{ add $index 1 }}.</td>
-                          <td>{{ $asset.InventoryNumber }}</td>
+                          <td class="text-center"></td>
+                          <td><span class="text-dark">{{ $asset.InventoryNumber }}</span></td>
                           <td>{{ $asset.AssetName }}</td>
                           <td>{{ $asset.DeviceName }}</td>
                           <td>{{ if $asset.User.Name }}{{ $asset.User.Name }}{{ else }}<span class="text-muted">Not Assigned</span>{{ end }}</td>
@@ -234,9 +223,14 @@
                             {{ end }}
                           </td>
                           <td>
-                            <button type="button" class="btn btn-warning btn-sm btn-assign" data-bs-toggle="modal" data-bs-target="#modalAssign" data-bs-id="{{ $asset.ID }}" data-bs-user="{{ if $asset.UserID }}{{ $asset.UserID }}{{ end }}" data-bs-assetname="{{ $asset.AssetName }} ({{ $asset.InventoryNumber }})">
-                              <i class="bi bi-person-plus"></i>
-                            </button>
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalAssign" data-bs-id="{{ $asset.ID }}" data-bs-user="{{ if $asset.UserID }}{{ $asset.UserID }}{{ end }}" data-bs-assetname="{{ $asset.AssetName }} ({{ $asset.InventoryNumber }})" title="Assign Member">
+                                <i class="bi bi-person-plus"></i>
+                              </button>
+                              <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditLabel" data-bs-id="{{ $asset.ID }}" data-bs-label="{{ $asset.DeviceName }}" title="Edit Label">
+                                <i class="bi bi-pencil-square"></i>
+                              </button>
+                            </div>
                           </td>
                         </tr>
                         {{ end }}
@@ -288,6 +282,32 @@
   </div>
 </div>
 
+<!-- Modal Edit Label -->
+<div class="modal fade" id="modalEditLabel" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Label / Nama Perangkat</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/asset-management/update-label" method="POST">
+        <div class="modal-body">
+            <input type="hidden" name="redirect_to" value="/asset-management/laptop">
+            <input type="hidden" name="asset_id" id="edit_label_asset_id">
+            <div class="mb-3">
+                <label for="device_name" class="form-label">Label / Device Name</label>
+                <input type="text" class="form-control" name="device_name" id="edit_label_input" required>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // 1. Initialize DataTables (Simple-DataTables)
@@ -302,7 +322,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 perPage: "{select}",
                 noRows: "Data tidak ditemukan",
                 info: "Menampilkan {start} sampai {end} dari {rows} data",
-            }
+            },
+            columns: [
+                { select: 0, sortable: false }
+            ]
         });
 
         // Move the selector to bottom after init
@@ -384,19 +407,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 3. Modal Event Handling (Bootstrap 5 way)
+    // 3. Modal Assign Event Handling
     const modalAssign = document.getElementById('modalAssign');
     if (modalAssign) {
         modalAssign.addEventListener('show.bs.modal', function (event) {
-            // Button that triggered the modal
             const button = event.relatedTarget;
-            
-            // Extract info from data-bs-* attributes
             const assetId = button.getAttribute('data-bs-id');
             const userId = button.getAttribute('data-bs-user');
             const assetName = button.getAttribute('data-bs-assetname');
 
-            // Update the modal's content.
             const modalAssetId = modalAssign.querySelector('#modal_asset_id');
             const modalAssetInfo = modalAssign.querySelector('#modal_asset_info');
             
@@ -406,6 +425,22 @@ document.addEventListener('DOMContentLoaded', function() {
             if (tomSelectInstance) {
                 tomSelectInstance.setValue(userId || "");
             }
+        });
+    }
+
+    // 4. Modal Edit Label Handling
+    const modalEditLabel = document.getElementById('modalEditLabel');
+    if (modalEditLabel) {
+        modalEditLabel.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const assetId = button.getAttribute('data-bs-id');
+            const label = button.getAttribute('data-bs-label');
+
+            const modalIdInput = modalEditLabel.querySelector('#edit_label_asset_id');
+            const modalLabelInput = modalEditLabel.querySelector('#edit_label_input');
+
+            modalIdInput.value = assetId;
+            modalLabelInput.value = label;
         });
     }
 });

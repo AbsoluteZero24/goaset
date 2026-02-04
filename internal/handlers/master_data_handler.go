@@ -13,7 +13,7 @@ func (server *Server) ListMasterBranch(w http.ResponseWriter, r *http.Request) {
 	var branches []models.MasterBranch
 	server.DB.Find(&branches)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/master_data/branch", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/master_data/branch", map[string]interface{}{
 		"title":    "Master Cabang",
 		"branches": branches,
 	})
@@ -48,7 +48,7 @@ func (server *Server) EditMasterBranch(w http.ResponseWriter, r *http.Request) {
 	var branches []models.MasterBranch
 	server.DB.Find(&branches)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/master_data/branch", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/master_data/branch", map[string]interface{}{
 		"title":    "Edit Cabang",
 		"branch":   branch,
 		"branches": branches,
@@ -94,7 +94,7 @@ func (server *Server) ListMasterDepartment(w http.ResponseWriter, r *http.Reques
 	var branches []models.MasterBranch
 	server.DB.Find(&branches)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/master_data/department", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/master_data/department", map[string]interface{}{
 		"title":       "Master Bagian",
 		"departments": departments,
 		"branches":    branches,
@@ -135,7 +135,7 @@ func (server *Server) EditMasterDepartment(w http.ResponseWriter, r *http.Reques
 	var branches []models.MasterBranch
 	server.DB.Find(&branches)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/master_data/department", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/master_data/department", map[string]interface{}{
 		"title":       "Edit Bagian",
 		"department":  department,
 		"departments": departments,
@@ -184,7 +184,7 @@ func (server *Server) ListMasterSubDepartment(w http.ResponseWriter, r *http.Req
 	var departments []models.MasterDepartment
 	server.DB.Find(&departments)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/master_data/sub_department", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/master_data/sub_department", map[string]interface{}{
 		"title":       "Master Sub Bagian",
 		"subDepts":    subDepts,
 		"departments": departments,
@@ -225,7 +225,7 @@ func (server *Server) EditMasterSubDepartment(w http.ResponseWriter, r *http.Req
 	var departments []models.MasterDepartment
 	server.DB.Find(&departments)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/master_data/sub_department", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/master_data/sub_department", map[string]interface{}{
 		"title":       "Edit Sub Bagian",
 		"subDept":     subDept,
 		"subDepts":    subDepts,
@@ -271,7 +271,7 @@ func (server *Server) ListMasterPosition(w http.ResponseWriter, r *http.Request)
 	var positions []models.MasterPosition
 	server.DB.Find(&positions)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/master_data/position", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/master_data/position", map[string]interface{}{
 		"title":     "Master Jabatan",
 		"positions": positions,
 	})
@@ -306,7 +306,7 @@ func (server *Server) EditMasterPosition(w http.ResponseWriter, r *http.Request)
 	var positions []models.MasterPosition
 	server.DB.Find(&positions)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "administration/master_data/position", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "administration/master_data/position", map[string]interface{}{
 		"title":     "Edit Jabatan",
 		"position":  position,
 		"positions": positions,
@@ -349,7 +349,7 @@ func (server *Server) ListMasterAssetCategory(w http.ResponseWriter, r *http.Req
 	var categories []models.MasterAssetCategory
 	server.DB.Find(&categories)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "inventori/master_data/asset_category", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "inventori/master_data/asset_category", map[string]interface{}{
 		"title":      "Master Kategori Aset",
 		"categories": categories,
 	})
@@ -384,7 +384,7 @@ func (server *Server) EditMasterAssetCategory(w http.ResponseWriter, r *http.Req
 	var categories []models.MasterAssetCategory
 	server.DB.Find(&categories)
 
-	_ = server.Renderer.HTML(w, http.StatusOK, "inventori/master_data/asset_category", map[string]interface{}{
+	server.RenderHTML(w, r, http.StatusOK, "inventori/master_data/asset_category", map[string]interface{}{
 		"title":      "Edit Kategori Aset",
 		"category":   category,
 		"categories": categories,
